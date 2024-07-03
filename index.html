@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" href="./logo_rendy.png" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        #root {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        #root h1 {
+            margin-bottom: 24px;
+        }
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #dddfe2;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+        #roleSelect {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #dddfe2;
+            border-radius: 6px;
+            font-size: 16px;
+            background: white;
+            color: #1d2129;
+        }
+        .button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            color: white;
+            cursor: pointer;
+        }
+        #loginButton {
+            background-color: #1877f2;
+        }
+        #loginButton:hover{
+            background-color: #1857f2;
+        }
+        #registerButton {
+            background-color: #42b72a;
+        }
+        #registerButton:hover {
+            background-color: #20a126;
+        }
+        #logoutButton {
+            background-color: #d9534f;
+        }
+        #logoutButton:hover {
+            background-color: #d9334f;
+        }
+        .hidden {
+            display: none;
+        }
+        .role-message {
+            display: none;
+            margin: 20px 0;
+            font-size: 18px;
+        }
+        #admin.role-message { color: #1877f2; }
+        #basic.role-message { color: #42b72a; }
+        #moderator.role-message { color: #f39c12; }
+        #editor.role-message { color: #9b59b6; }
+        #viewer.role-message { color: #34495e; }
+
+        /* Media Queries for Responsive Design */
+        @media (max-width: 768px) {
+            #root {
+                padding: 20px;
+                max-width: 90%;
+            }
+            .input-field, .button {
+                font-size: 14px;
+                padding: 8px;
+            }
+            .role-message {
+                font-size: 16px;
+            }
+        }
+        @media (max-width: 480px) {
+            #root {
+                padding: 10px;
+                max-width: 100%;
+            }
+            .input-field, .button {
+                font-size: 12px;
+                padding: 6px;
+            }
+            .role-message {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <h1>Login Page</h1>
+        <input type="text" placeholder="Username" id="usernameInput" class="input-field">
+        <input type="password" placeholder="Password" id="passwordInput" class="input-field">
+        <select id="roleSelect" class="input-field">
+            <option value="basic">User Biasa</option>
+            <option value="moderator">Moderator</option>
+            <option value="editor">Editor</option>
+            <option value="viewer">Viewer</option>
+            <option value="admin">Admin</option>
+        </select>
+        <button onclick="onRegister()" id="registerButton" class="button">Register</button>
+        <button onclick="onLogin()" id="loginButton" class="button">Login</button>
+        <button onclick="onLogout()" id="logoutButton" class="button hidden">Logout</button>
+        <br>
+        <h1 id="admin" class="role-message">👑 Login sebagai Admin</h1>
+        <h1 id="basic" class="role-message">👤 Login sebagai User Biasa</h1>
+        <h1 id="moderator" class="role-message">🔧 Login sebagai Moderator</h1>
+        <h1 id="editor" class="role-message">✏️ Login sebagai Editor</h1>
+        <h1 id="viewer" class="role-message">👀 Login sebagai Viewer</h1>
+    </div>
+
+    <script type="application/javascript">
+        const usernameInput = document.getElementById("usernameInput")
+        const passwordInput = document.getElementById("passwordInput")
+        const roleSelect = document.getElementById("roleSelect")
+        const loginButton = document.getElementById("loginButton")
+        const logoutButton = document.getElementById("logoutButton")
+        const registerButton = document.getElementById("registerButton")
+
+        const admin = document.getElementById("admin")
+        const basic = document.getElementById("basic")
+        const moderator = document.getElementById("moderator")
+        const editor = document.getElementById("editor")
+        const viewer = document.getElementById("viewer")
+
+        admin.style.display = "none"
+        basic.style.display = "none"
+        moderator.style.display = "none"
+        editor.style.display = "none"
+        viewer.style.display = "none"
+        logoutButton.style.display = "none"
+
+        const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers')) || []
+
+        const onRegister = () => {
+            const username = usernameInput.value
+            const password = passwordInput.value
+            const role = roleSelect.value
+
+            if(username && password) {
+                registeredUsers.push({ username, password, role })
+                localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers))
+                alert("Pendaftaran berhasil. Silakan login.")
+                usernameInput.value = ''
+                passwordInput.value = ''
+            } else {
+                alert("Username dan password tidak boleh kosong!")
+            }
+        }
+
+        const onLogin = () => {
+            const username = usernameInput.value
+            const password = passwordInput.value
+            const user = registeredUsers.find(user => user.username === username && user.password === password)
+
+            if(user) {
+                localStorage.setItem("username", username)
+                localStorage.setItem("role", user.role)
+                displayRole(user.role)
+                usernameInput.style.display = "none"
+                passwordInput.style.display = "none"
+                roleSelect.style.display = "none"
+                loginButton.style.display = "none"
+                registerButton.style.display = "none"
+                logoutButton.style.display = "block"
+            } else {
+                alert("Username atau password salah!")
+            }
+        }
+
+        const displayRole = (role) => {
+            admin.style.display = "none"
+            basic.style.display = "none"
+            moderator.style.display = "none"
+            editor.style.display = "none"
+            viewer.style.display = "none"
+
+            if(role === "admin") {
+                admin.style.display = "block"
+            } else if(role === "basic") {
+                basic.style.display = "block"
+            } else if(role === "moderator") {
+                moderator.style.display = "block"
+            } else if(role === "editor") {
+                editor.style.display = "block"
+            } else if(role === "viewer") {
+                viewer.style.display = "block"
+            }
+        }
+
+        if(localStorage.getItem('username')) {
+            usernameInput.style.display = "none"
+            passwordInput.style.display = "none"
+            roleSelect.style.display = "none"
+            loginButton.style.display = "none"
+            registerButton.style.display = "none"
+            logoutButton.style.display = "block"
+            displayRole(localStorage.getItem("role"))
+        }
+
+        const onLogout = () => {
+            localStorage.clear()
+            location.reload()
+        }
+    </script>
+</body>
+</html>
