@@ -31,6 +31,3 @@ Welcome to my GitHub profile! I'm excited to share my coding journey with you. H
 - I love solving puzzles and challenges, both in coding and in real life. When I'm not coding, you can find me exploring the latest tech trends or playing video games.
 
 Feel free to check out my repositories and contribute if you find something interesting. Let's learn and grow together! 🚀
-
-## DEMO
-- [DEMONSTRASI](https://rens-stream.vercel.app)
